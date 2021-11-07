@@ -24,12 +24,12 @@ Password: password
 There are three containers each one has one specific role.
 
 ### mailserver
-Container that use as a base (docker-mailserver)[https://github.com/docker-mailserver/docker-mailserver] in order to:
+Container that use as a base [docker-mailserver](https://github.com/docker-mailserver/docker-mailserver) in order to:
 
 * SMTP daemon: send and receive email
 * IMAP daemon: read email from UI (container roundcube)
 
-Others services are disable using environment variables (see also (docker-mailserver example)[https://github.com/docker-mailserver/docker-mailserver#examples]) ).
+Others services are disable using environment variables (see also [docker-mailserver example](https://github.com/docker-mailserver/docker-mailserver#examples) ).
 
 Two users are created when docker container start:
 
@@ -38,11 +38,11 @@ Two users are created when docker container start:
 
 
 ### UI - roundcube
-(Roundcube)[https://roundcube.net/] is a browser-based multilingual IMAP client with an application-like user interface.
-The reason to use roundcube over the alternatives, such as (squirrel)[https://squirrelmail.org/], are:
+[Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with an application-like user interface.
+The reason to use roundcube over the alternatives, such as [squirrel](https://squirrelmail.org/), are:
 
 * easy to use via browser
-* (available image in dockerhub)[https://hub.docker.com/r/roundcube/roundcubemail/]
+* [available image in dockerhub](https://hub.docker.com/r/roundcube/roundcubemail/)
 * easy to configure, just two environment variables
 
 In this project roundcube connect via IMAP to mailserver.
@@ -50,7 +50,7 @@ In this project roundcube connect via IMAP to mailserver.
 ### example-sender
 Starting from Ubuntu image is created a container that send an email from example-sender@example.com to user@example.com every 30 seconds, sending email is done in entrypoint.sh.
 
-In order to send email is used (SSMTP)[https://salsa.debian.org/debian/ssmtp] a program that send mail via the departmental mailhub, using different protocol.
+In order to send email is used [SSMTP](https://salsa.debian.org/debian/ssmtp) a program that send mail via the departmental mailhub, using different protocol.
 In this project departmental mailhub is mailserver container via SMTP.
 
 This project use SSMTP instead of sendmail because it is already configured a mailserver so it is not required to start also a mail daemon in example-sender.
@@ -65,7 +65,7 @@ The flow to send email is:
                             └───────────────────────┘
 ```
 
-* (mailx)[https://en.wikipedia.org/wiki/Mailx]: is just a "Front End" for sending an email, it prepare the request to mail user agent configured in the server
+* [mailx](https://en.wikipedia.org/wiki/Mailx): is just a "Front End" for sending an email, it prepare the request to mail user agent configured in the server
 * SSMTP: called by Operating System receive the request prepared from mailx and connect via SMTP to mailserver container
 * Mailserver container: receive request from SSMTP, validate credential and deliver the email
 
