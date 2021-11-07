@@ -1,0 +1,66 @@
+version: '3.7'
+
+services:
+  mailserver:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mailserver
+    hostname: mailserver
+    domainname: example.com
+    ports:
+      - "11025:25"
+      - "11143:143"
+      - "11587:587"
+      - "11993:993"
+    volumes:
+      - mailserver-data:/var/mail/
+      - mailserver-state:/var/mail-state/
+      - mailserver-logs:/var/log/mail/
+      - mailserver-config:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - ENABLE_SPAMASSASSIN=0
+      - SPAMASSASSIN_SPAM_TO_INBOX=0
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=0
+      - ENABLE_POSTGREY=0
+      - ONE_DIR=1
+      - DMS_DEBUG=0
+      - ENABLE_LDAP=0
+      - ENABLE_SASLAUTHD=0
+      - POSTFIX_MESSAGE_SIZE_LIMIT=100000000
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    restart: always
+    networks:
+      - net-dev-mailserver
+    
+  roundcube:
+    image: docker.io/roundcube/roundcubemail:1.4.11-apache
+    ports:
+      - "8000:80"
+    environment:
+      - ROUNDCUBEMAIL_DEFAULT_HOST=mailserver
+      - ROUNDCUBEMAIL_SMTP_SERVER=mailserver
+    networks:
+      - net-dev-mailserver
+
+  example-sender:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: example-sender
+    networks:
+      - net-dev-mailserver
+
+volumes:
+  mailserver-data:
+  mailserver-state:
+  mailserver-logs:
+  mailserver-config:
+
+networks:
+  net-dev-mailserver:
+    driver: bridge 
